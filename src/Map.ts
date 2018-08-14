@@ -45,7 +45,6 @@ export default class Map {
     for(let node of nodes) {
       Painter.draw(C, node.tag, node)
     }
-   
   }
   viewMove(x: number, y: number) {
     this.view.x += x

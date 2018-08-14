@@ -20,10 +20,11 @@ export default class G extends vNode{
 
 Painter.reg('G', function(node: G){
   const { children, center, deg } = node
+  this.translate(...center)
   this.rotate(deg * Math.PI / 180)
+  this.translate(-center[0], -center[1])
   const self = this
   for(let x in children) {
-    console.log(children[x])
     Painter.draw(self, children[x].tag, children[x])
   }
   this.rotate(-deg * Math.PI / 180)
