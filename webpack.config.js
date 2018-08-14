@@ -14,7 +14,11 @@ module.exports = {
     open: true
   },
   resolve: {
-    extensions: [ '.ts', 'tsx', '.js']
+    extensions: [ '.ts', 'tsx', '.js'],
+    alias: {
+      src: path.join(__dirname, 'src'),
+      models: path.join(__dirname, 'src/models')
+    }
   },
   module: {
     rules: [{
