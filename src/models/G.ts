@@ -6,7 +6,12 @@ interface g {
   w?: number
   h?: number
   deg?: number
+  clip?: boolean
 }
+/**
+ * 容器
+ * @constructor 
+ */
 export default class G extends vNode{
   left:number = 0
   top: number = 0
@@ -15,6 +20,8 @@ export default class G extends vNode{
   deg:number = 0
   center: [number, number] = [0, 0]
   children: Array<vNode>
+  c: string
+  clip: boolean = false
   constructor(obj:g = {}) {
     super('G')
     for(let x in obj) {
@@ -32,8 +39,8 @@ export default class G extends vNode{
 }
 
 Painter.reg('G', function(node: G){
-  const { children, center, deg, w, h, left, top } = node
-  if(w && h) {
+  const { children, center, deg, w, h, left, top, c, clip } = node
+  if(clip && w && h) {
     this.beginPath()
     this.rect(left, top, w, h)
     this.clip()
@@ -41,10 +48,14 @@ Painter.reg('G', function(node: G){
   this.beginPath()
   this.translate(...center)
   this.rotate(deg * Math.PI / 180)
-  this.translate(-center[0], -center[1])
+  this.translate(-center[0] + left, -center[1] + top)
+  this.rect(0, 0, w, h)
+  this.fillStyle = c
+  this.fill()
   const self = this
   for(let x in children) {
     Painter.draw(self, children[x].tag, children[x])
   }
+  this.translate(-left, -top)
   this.rotate(-deg * Math.PI / 180)
 })

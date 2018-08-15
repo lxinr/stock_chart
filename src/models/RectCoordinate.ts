@@ -30,15 +30,15 @@ export default class RectCoordinate extends vNode {
   maxY: number = 100
   children: Array<any>
   data: Array<any>
+  c: string
   readonly length: number = 241
   constructor(obj: rect) {
     super(tag)
     for(let x in obj) {
       this[x] = obj[x]
     }
+    this.c = `rgba(${Math.round(Math.random() * 0xff)}, ${Math.round(Math.random() * 0xff)}, ${Math.round(Math.random() * 0xff)}, .3)`
     this.update(this.data)
-    console.log(this.minY, this.maxY)
-    console.log(this)
   }
   update(data) {
     this.data = data
@@ -49,11 +49,11 @@ export default class RectCoordinate extends vNode {
     this.minY = _minY - (_maxY - _minY) * .3
   }
   coord(pointer: [number, number]) {
-    const { maxX, maxY, minX, minY, w, h, left, top, perW} = this
+    const { maxX, maxY, minX, minY, w, h, top, perW} = this
     const perX = w / (maxX - minX)
     const perY = h / (maxY - minY)
-    let _x = perW * pointer[0] + left
-    let _y = top + h - (pointer[1] - minY) * perY
+    let _x = perW * pointer[0]
+    let _y = h - (pointer[1] - minY) * perY
     return [_x, _y]
   }
   get perW() {
@@ -62,19 +62,22 @@ export default class RectCoordinate extends vNode {
 }
 
 Painter.reg(tag, function(node: RectCoordinate) {
-  const {w, h, left, top, minX, minY, maxX, maxY, data} = node
+  const {w, h, left, top, minX, minY, maxX, maxY, data, c} = node
   const _self = this
   let g = new G({
     left,
-    top
+    top,
+    w,
+    h,
+    c
   })
   // 创建坐标
   let rc = new Lines({
     pointers: [
-      [left, top],
-      [left, top + h],
-      [left + w, top + h],
-      [left + w, top]
+      [0, 0],
+      [0, h],
+      [0 + w, h],
+      [0 + w, 0]
     ],
     c: '#ddd',
     w: .3
@@ -83,8 +86,8 @@ Painter.reg(tag, function(node: RectCoordinate) {
   let g_v = new G()
   let g_0 = new G()
   for(let x = 0; x <= 11; x++) {
-    let _x = left - 10
-    let _y = top + h - x * (h / 11)
+    let _x = - 10
+    let _y = h - x * (h / 11)
     g_v.add(new Line({
       p1: node.coord([0, (maxY - minY) / 11 * x + minY]) as [number, number],
       p2: node.coord([241, (maxY - minY) / 11 * x + minY]) as [number, number],
@@ -103,8 +106,8 @@ Painter.reg(tag, function(node: RectCoordinate) {
   let g_h = new G()
   let strs = ['9:30', '10:00', '10:30', '11:00', '11:30/13:00', '13:30', '14:00', "14:30", "15:00"]
   for(let i = 0; i < strs.length; i ++) {
-    let _x = w / (strs.length - 1) * i + left
-    let _y = top + h + 12
+    let _x = w / (strs.length - 1) * i 
+    let _y = h + 12
     g_h.add(new Text({
       text: strs[i],
       left: _x,
@@ -113,7 +116,6 @@ Painter.reg(tag, function(node: RectCoordinate) {
       c: '#ccc'
     }))
   }
-  g_v.center = [left - 10, h / 2 + top]
   g.add(g_v)
   g.add(g_h)
   g.add(rc)

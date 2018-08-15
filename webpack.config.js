@@ -24,15 +24,7 @@ module.exports = {
     rules: [{
       test: /\.tsx?$/,
       loader: 'ts-loader'
-    }, {
-      test: /\.scss$/,
-      use: [
-        'style-loader',
-        'css-loader',
-        'sass-loader'
-      ]
-    }
-    ]
+    }]
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin()
