@@ -1,0 +1,133 @@
+import vNode from 'src/VNode'
+import Painter from 'src/Painter'
+import Line from 'models/Line'
+import Lines from 'models/Lines'
+import G from 'models/G';
+import Text from 'models/Text'
+
+let tag = 'RECT_COORDINATE'
+
+interface rect {
+  w?: number
+  h?: number
+  left?: number
+  top?: number
+  minX?: number
+  minY?: number
+  maxX?: number
+  maxY?: number
+  data: Array<number>
+}
+
+export default class RectCoordinate extends vNode {
+  w: number = 100
+  h: number = 100
+  left: number = 0
+  top: number = 0
+  minX: number = 0
+  maxX: number = 241
+  minY: number = 0
+  maxY: number = 100
+  children: Array<any>
+  data: Array<any>
+  readonly length: number = 241
+  constructor(obj: rect) {
+    super(tag)
+    for(let x in obj) {
+      this[x] = obj[x]
+    }
+    this.update(this.data)
+    console.log(this.minY, this.maxY)
+    console.log(this)
+  }
+  update(data) {
+    this.data = data
+    if(!data || data.length <= 1) return
+    let _maxY = Math.max.apply(Math, this.data)
+    let _minY = Math.min.apply(Math, this.data)
+    this.maxY = _maxY + (_maxY - _minY) * .3
+    this.minY = _minY - (_maxY - _minY) * .3
+  }
+  coord(pointer: [number, number]) {
+    const { maxX, maxY, minX, minY, w, h, left, top, perW} = this
+    const perX = w / (maxX - minX)
+    const perY = h / (maxY - minY)
+    let _x = perW * pointer[0] + left
+    let _y = top + h - (pointer[1] - minY) * perY
+    return [_x, _y]
+  }
+  get perW() {
+    return this.w / this.length
+  }
+}
+
+Painter.reg(tag, function(node: RectCoordinate) {
+  const {w, h, left, top, minX, minY, maxX, maxY, data} = node
+  const _self = this
+  let g = new G({
+    left,
+    top
+  })
+  // 创建坐标
+  let rc = new Lines({
+    pointers: [
+      [left, top],
+      [left, top + h],
+      [left + w, top + h],
+      [left + w, top]
+    ],
+    c: '#ddd',
+    w: .3
+  })
+  // 纵坐标刻度
+  let g_v = new G()
+  let g_0 = new G()
+  for(let x = 0; x <= 11; x++) {
+    let _x = left - 10
+    let _y = top + h - x * (h / 11)
+    g_v.add(new Line({
+      p1: node.coord([0, (maxY - minY) / 11 * x + minY]) as [number, number],
+      p2: node.coord([241, (maxY - minY) / 11 * x + minY]) as [number, number],
+      c: 'rgba(233, 233, 233, .3)',
+      w: .3
+    }))    
+    g_v.add(new Text({
+      text: ((maxY - minY) / 11 * x + minY).toFixed(2),
+      left: _x,
+      top: _y,
+      textAlign: 'right',
+      c: '#ccc'
+    }))
+  }
+  // 横坐标刻度
+  let g_h = new G()
+  let strs = ['9:30', '10:00', '10:30', '11:00', '11:30/13:00', '13:30', '14:00', "14:30", "15:00"]
+  for(let i = 0; i < strs.length; i ++) {
+    let _x = w / (strs.length - 1) * i + left
+    let _y = top + h + 12
+    g_h.add(new Text({
+      text: strs[i],
+      left: _x,
+      top: _y,
+      textAlign: 'center',
+      c: '#ccc'
+    }))
+  }
+  g_v.center = [left - 10, h / 2 + top]
+  g.add(g_v)
+  g.add(g_h)
+  g.add(rc)
+  // 绘制折线
+  let perW = node.perW
+  let _data = data.map((item, index) => node.coord([index, item]))
+  let l_0 = new Lines({
+    pointers: _data as Array<[number, number]>,
+    c: 'rgb(91, 161, 236)',
+    bezier: true,
+    w: .5
+  })
+  l_0.bezier = !l_0.bezier
+  g.add(l_0)
+  console.log(g)
+  Painter.draw(_self, 'G', g)  
+})

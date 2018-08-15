@@ -17,7 +17,7 @@ export default class Line extends vNode {
   p2: [number, number]
   pm: [number, number]
   c: string
-  w: number
+  w: number = 1
   deg: number = 0
   constructor(obj:line) {
     super('LINE')
@@ -58,7 +58,8 @@ export default class Line extends vNode {
 
 /* 注册绘制方法 */
 Painter.reg('LINE', function(node:Line) {
-  const { p1, p2, pm, c } = node
+  const { p1, p2, pm, c, w} = node
+  this.lineWidth = w
   this.moveTo(...p1)
   this.lineTo(...p2)
   this.strokeStyle = c

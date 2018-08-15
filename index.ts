@@ -1,30 +1,30 @@
+import 'src/assets/style/index.scss';
 import Map from 'src/Map'
-import Line from 'models/Line'
-import Lines from 'models/Lines'
-import G from 'models/G'
-
+import RectCoordinate from 'models/RectCoordinate'
+import Item from 'src/workbench/backpack/item';
 /* 测试 */
 let m = new Map('app', 2)
-let g_1 = new G()
-let g_2 = new G()
-let g_3 = new G()
 
-let ls_1 = new Lines({
-  pointers: [[100, 100], [100, 200], [130, 200]]
-})
+let data = []
+let start = 2800
 
-g_1.add(ls_1)
-g_2.add(ls_1)
-g_3.add(ls_1)
+let nodes = []
+for(let x = 0; x < 6; x++) {
+  let rc = new RectCoordinate({
+    w: 330,
+    h: (m.h - 200) / 2,
+    left: x % 3 * ((m.w) / 3) + 80,
+    top: x >=3 ? m.h / 2 + 25 : 50,
+    data: []
+  })
+  nodes.push(rc)
+  m.add(rc)
+}
 
-m.add(g_1)
-m.add(g_2)
-m.add(g_3)
-
-g_1.center = g_2.center = g_3.center = [100, 200]
-
-setInterval(function() {
-  g_1.deg += 115
-  g_2.deg += 125
+let t = setInterval(function() {
+  let x = data.length
+  if(x >= 241) return clearInterval(t)
+  data.push(Number((start += Math.random() * 6 - 3).toFixed(2)))
+  nodes.forEach(item => {item.update(data)})
   m.render()
-}, 1000/ 24)
+}, 1000/60)

@@ -29,10 +29,11 @@ export default class Map {
     this.el.height = this.fr.offsetHeight * dpr
     this.h = this.fr.offsetHeight
     this.dpr = dpr
-    this.el.style.width = this.fr.offsetWidth + 'px'
-    this.el.style.height = this.fr.offsetHeight + 'px'
+    this.el.style.width = '100%' // this.fr.offsetWidth + 'px'
+    this.el.style.height = '100%' // this.fr.offsetHeight + 'px'
     this.fr.appendChild(this.el)
     this.C = this.el.getContext('2d')
+    this.C.translate(.5, .5)
     this.C.imageSmoothingEnabled = true;
     this.C.scale(dpr, dpr)
     this.nodes = []

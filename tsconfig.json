@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "sourceMap": true,
+    "target": "es5",    
     "baseUrl": ".",
     "paths": {
       "src/*": ["./src/*"],

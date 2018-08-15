@@ -8,10 +8,11 @@ interface polygon {
   fill?: boolean
   center?: [number, number]
 }
-class Polygon extends vNode {
+export default class Polygon extends vNode {
   pointers: Array<[number, number]>
   c?: string
   fill: boolean
+  w: number
   center: [number, number]
   constructor(obj: polygon) {
     super('POLYGON')
@@ -38,3 +39,14 @@ class Polygon extends vNode {
     })
   }
 }
+
+Painter.reg('POLYGON', function(node: Polygon) {
+  const { pointers, c = '#ff0', w = 1 } = node
+  for(let x in pointers) {
+    this.lineTo(...pointers[x])
+  }
+  this.lineWidth  = w
+  this.closePath()
+  this.strokeStyle = c
+  this.stroke()
+})
