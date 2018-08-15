@@ -7,6 +7,7 @@ interface g {
   h?: number
   deg?: number
   clip?: boolean
+  c?: string
 }
 /**
  * 容器
