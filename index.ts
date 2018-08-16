@@ -1,28 +1,14 @@
 import Map from 'src/Map'
-import RectCoordinate from 'models/RectCoordinate'
+import PolyCoordinate from 'models/PolyCoordinate'
 /* 测试 */
 let m = new Map('app', 2)
 
-let data = []
-let start = 2800
+let polyC_1 = new PolyCoordinate({
+  axis: ['力量', '智力', '精神', '敏捷', '耐力'],
+  data: [60, 70, 90, 50, 85],
+  w: 100,
+  h: 100
+})
 
-let nodes = []
-for(let x = 0; x < 6; x++) {
-  let rc = new RectCoordinate({
-    w: (m.w - 400) / 3,
-    h: (m.h - 200) / 2,
-    left: x % 3 * ((m.w) / 3) + 80,
-    top: x >=3 ? m.h / 2 + 25 : 50,
-    data: []
-  })
-  nodes.push(rc)
-  m.add(rc)
-}
-
-let t = setInterval(function() {
-  let x = data.length
-  if(x >= 241) return clearInterval(t)
-  data.push(Number((start += Math.random() * 6 - 3).toFixed(2)))
-  nodes.forEach(item => {item.update(data)})
-  m.render()
-}, 1000/60)
+m.add(polyC_1)
+m.render()

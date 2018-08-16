@@ -6,13 +6,15 @@ interface polygon {
   pointers: Array<[number, number]>
   c?: string
   fill?: boolean
-  center?: [number, number]
+  center?: [number, number],
+  fillStyle?: string
 }
 export default class Polygon extends vNode {
   pointers: Array<[number, number]>
   c?: string
   fill: boolean
   w: number
+  fillStyle: string
   center: [number, number]
   constructor(obj: polygon) {
     super('POLYGON')
@@ -41,7 +43,7 @@ export default class Polygon extends vNode {
 }
 
 Painter.reg('POLYGON', function(node: Polygon) {
-  const { pointers, c = '#ff0', w = 1 } = node
+  const { pointers, c = '#ff0', w = 1, fill, fillStyle = 'rgb(211, 211, 211, .3)' } = node
   for(let x in pointers) {
     this.lineTo(...pointers[x])
   }
@@ -49,4 +51,8 @@ Painter.reg('POLYGON', function(node: Polygon) {
   this.closePath()
   this.strokeStyle = c
   this.stroke()
+  if(fill) {
+    this.fillStyle = fillStyle
+    this.fill()
+  }  
 })
