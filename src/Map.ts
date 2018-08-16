@@ -40,9 +40,9 @@ export default class Map {
     this.mouse = {}
     this.el.addEventListener('mousemove', () => { this.handleMousemove(event) })
   }
-  render() {
+  render(clear: boolean = true) {
     const { nodes, C, w, h, view } = this
-    C.clearRect(view.x, view.y, w, h)
+    clear && C.clearRect(view.x, view.y, w, h)
     for(let node of nodes) {
       Painter.draw(C, node.tag, node)
     }
