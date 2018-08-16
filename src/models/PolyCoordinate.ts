@@ -5,7 +5,6 @@ import Lines from 'models/Lines'
 import G from 'models/G';
 import Text from 'models/Text'
 import Polygon from 'models/Polygon'
-import Item from 'src/workbench/backpack/item';
 
 let tag = 'POLY_COORDINATE'
 
@@ -16,12 +15,22 @@ interface poly {
   axis?: Array<string>
 }
 
+/**
+ * 多边形坐标系
+ *
+ * @export
+ * @class PolyCoordinate
+ * @extends {vNode}
+ * @constructor
+ * @param { poly } obj
+ */
+
 export default class PolyCoordinate extends vNode {
   w: number = 400
   h: number = 400
   data: Array<number>
   axis: Array<string>
-  constructor(obj: any) {
+  constructor(obj: poly) {
     super(tag)
     for(let x in obj) {
       this[x] = obj[x]
@@ -56,7 +65,7 @@ Painter.reg(tag, function(node: PolyCoordinate) {
     })
     g.add(p_1)
   }
-  for(let i = 0 ; i < 5; i ++ ) {
+  for(let i = 0 ; i < l; i ++ ) {
     let deg = i * perDeg - 90
     let l_1 = new Line({
       p1: center as [number, number],
@@ -76,7 +85,7 @@ Painter.reg(tag, function(node: PolyCoordinate) {
     }),
     c: '#f00',
     fill: true,
-    fillStyle: 'rgba(255, 0, 0, .3)'
+    fillStyle: 'rgba(255, 0, 0, .4)'
   })  
   
   g.add(p_2)

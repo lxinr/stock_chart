@@ -7,7 +7,8 @@ interface polygon {
   c?: string
   fill?: boolean
   center?: [number, number],
-  fillStyle?: string
+  fillStyle?: string,
+  sort?: boolean
 }
 export default class Polygon extends vNode {
   pointers: Array<[number, number]>
@@ -16,14 +17,17 @@ export default class Polygon extends vNode {
   w: number
   fillStyle: string
   center: [number, number]
+  sort: boolean = true
   constructor(obj: polygon) {
     super('POLYGON')
     this.calcCenter(obj.pointers)
-    obj.pointers.sort((a:[number, number], b: [number, number]) => {
-      return (a[0] - this.center[0]) * (b[1] - this.center[1]) - (a[1] - this.center[1]) * (b[0] - this.center[0])
-    })
     for(let x in obj) {
       this[x] = obj[x]
+    }    
+    if(this.sort){
+      this.pointers = obj.pointers.sort((a:[number, number], b: [number, number]) => {
+        return (a[0] - this.center[0]) * (b[1] - this.center[1]) - (a[1] - this.center[1]) * (b[0] - this.center[0])
+      })
     }
   }
   calcCenter(pointers: Array<[number, number]>) {

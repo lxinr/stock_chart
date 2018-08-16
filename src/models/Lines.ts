@@ -6,6 +6,8 @@ interface lines {
   w?: number
   c?: string
   bezier?: boolean
+  fill?: boolean
+  fillStyle?: string
 }
 /* 线段集合 */
 export default class Lines extends vNode {
@@ -13,6 +15,8 @@ export default class Lines extends vNode {
   c: string
   w: number = 1
   bezier: boolean = false
+  fill?: boolean = false
+  fillStyle?: string = '#ccc'
   constructor(obj: lines) {
     super('LINES')
     for(let x in obj) {
@@ -22,7 +26,7 @@ export default class Lines extends vNode {
 }
 
 Painter.reg('LINES', function(Lines){
-  const { pointers, c = '#ff0', w = 1, bezier } = Lines
+  const { pointers, c = '#ff0', w = 1, bezier, fill = false, fillStyle } = Lines
   if(bezier) {
     this.moveTo(...pointers[0])
     for(let x = 1; x < pointers.length; x++) {
@@ -33,6 +37,10 @@ Painter.reg('LINES', function(Lines){
     for(let x in pointers) {
       this.lineTo(...pointers[x])
     }
+  }
+  if(fill) {
+    this.fillStyle = fillStyle
+    this.fill()
   }
   this.lineWidth  = w
   this.strokeStyle = c
