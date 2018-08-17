@@ -8,6 +8,7 @@ interface g {
   deg?: number
   clip?: boolean
   c?: string
+  onFocus?: Function
 }
 /**
  * 容器
@@ -22,12 +23,14 @@ export default class G extends vNode{
   center: [number, number] = [0, 0]
   children: Array<vNode>
   c: string
+  _c: string
   clip: boolean = false
   constructor(obj:g = {}) {
     super('G')
     for(let x in obj) {
       this[x] = obj[x]
-    }    
+    }
+    this._c = obj.c || 'rgba(0, 0, 0, .1)'
     this.children = []
   }
   add(vNode) {
@@ -36,11 +39,17 @@ export default class G extends vNode{
   remove(obj: any) {
     let i = this.children.indexOf(obj)
     this.children.splice(i, 1)
-  }  
+  }
+  onFocus() {
+    this.c = '#ff0'
+  }
+  onBlur() {
+    this.c = this._c
+  }
 }
 
 Painter.reg('G', function(node: G){
-  const { children, center, deg, w, h, left, top, c, clip } = node
+  const { children, center, deg, w, h, left, top, c = 'rgba(0, 0, 0, .1)', clip } = node
   if(clip && w && h) {
     this.beginPath()
     this.rect(left, top, w, h)
