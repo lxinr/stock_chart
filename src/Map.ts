@@ -1,4 +1,5 @@
 import Painter from 'src/Painter'
+import G from 'models/G'
 
 export default class Map {
   w: number
@@ -9,6 +10,8 @@ export default class Map {
   dpr: number
   nodes: Array<any>
   mouse: any
+  observerList: Array<G>
+  focus: G
   view: {
     x: 0,
     y: 0,
@@ -37,6 +40,7 @@ export default class Map {
     this.C.imageSmoothingEnabled = true;
     this.C.scale(dpr, dpr)
     this.nodes = []
+    this.observerList = []
     this.mouse = {}
     this.el.addEventListener('mousemove', () => { this.handleMousemove(event) })
   }
@@ -54,6 +58,7 @@ export default class Map {
   }
   add(obj: any) {
     this.nodes.push(obj)
+    if(obj.tag === 'G' && obj.w) this.observerList.push(obj)
   }
   remove(obj: any) {
     let i = this.nodes.indexOf(obj)
@@ -67,9 +72,33 @@ export default class Map {
     this.view.x = 0
     this.view.y = 0
   }
+  static getFocusNode(mouse: {x: number, y: number}, observerList: Array<G>) {
+    let temp
+    const { x, y} = mouse
+    for(let i = 0; i < observerList.length; i++) {
+      let _o = observerList[i]
+      if(_o.left > x ) continue
+      if(_o.left + _o.w < x ) continue
+      if(_o.top > y ) continue
+      if(_o.top + _o.h < y ) continue
+      temp = _o
+      break      
+    }
+    return temp
+  }
   handleMousemove(e) {
     if (!e) return
+    const { observerList } = this
     this.mouse.x = e.layerX
     this.mouse.y = e.layerY
+    let focus = Map.getFocusNode(this.mouse, observerList)
+    if(this.focus && focus !== this.focus) this.focus.onBlur()
+    if(focus) {
+      this.focus = focus
+      focus.onFocus()
+    } else {
+      this.focus = null
+    }
+    this.render()
   }
 }
