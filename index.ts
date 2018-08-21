@@ -1,5 +1,6 @@
 import Map from 'src/Map'
 import PolyCoordinate from 'models/PolyCoordinate'
+import Rec from 'models/RectCoordinate'
 import G from 'models/G'
 import Line from 'models/Line'
 import Pentagram from 'models/Pentagram'
@@ -8,26 +9,21 @@ import Pentagram from 'models/Pentagram'
 
 let m = new Map('app', 2)
 
-let size = 75
-let row = Math.floor(m.w / (size * 1.1))
-let col = Math.floor(m.h / (size * 1.1))
+let g = new G()
 
-for(let i = 0; i <= row * col; i++) {
-  let _r = Math.round(Math.random() * 0xff)
-  let _g = Math.round(Math.random() * 0xff)
-  let _b = Math.round(Math.random() * 0xff)
-  let g = new G({
-    left: (size * 1.1) * (i % row),
-    top: Math.floor(i / row) * (size * 1.1),
-    w: size,
-    h: size,
-    onFocus: function() {
-      this.c = `rgba(${_r}, ${_g}, ${_g}`
-      this.deg = 45
-    }
-  })
-  g.center = [(size * 1.1) * (i % row) + g.w /2,  Math.floor(i / row) * (size * 1.1) + g.h/2]
-  m.add(g)
-}
+let rc_1 = new Rec({
+  left: 100,
+  top: 100,
+  w: 1000,
+  h: 300,  
+  data: []
+})
 
+let _data = Array.apply(null, {length: 241}).map(item => {
+  return Math.random() * 100 + 2800
+})
+
+rc_1.update(_data)
+g.add(rc_1)
+m.add(g)
 m.render()

@@ -60,8 +60,8 @@ Painter.reg('G', function(node: G){
   this.rotate(deg * Math.PI / 180)
   this.translate(-center[0] + left, -center[1] + top)
   this.rect(0, 0, w, h)
-  this.fillStyle = c
-  this.fill()
+  // this.fillStyle = c
+  // this.fill()
   const self = this
   for(let x in children) {
     Painter.draw(self, children[x].tag, children[x])
