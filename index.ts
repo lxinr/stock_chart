@@ -4,6 +4,7 @@ import Rec from 'models/RectCoordinate'
 import G from 'models/G'
 import Line from 'models/Line'
 import Pentagram from 'models/Pentagram'
+import temp from 'models/temp'
 
 /* 测试 */
 
@@ -24,6 +25,16 @@ let _data = Array.apply(null, {length: 241}).map(item => {
 })
 
 rc_1.update(_data)
-g.add(rc_1)
+
+let t_1 = new temp({
+  left: 100,
+  top: 100,  
+  w: 1000,
+  data: _data
+})
+
+// g.add(rc_1)
+g.add(t_1)
+
 m.add(g)
 m.render()

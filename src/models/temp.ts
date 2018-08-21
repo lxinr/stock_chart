@@ -5,7 +5,7 @@ import Lines from 'models/Lines'
 import G from 'models/G';
 import Text from 'models/Text'
 
-let tag = 'RECT_COORDINATE'
+let tag = 'RECT_TEMP'
 
 interface rect {
   w?: number
@@ -122,17 +122,15 @@ Painter.reg(tag, function(node: RectCoordinate) {
   g.add(g_v)
   g.add(g_h)
   g.add(rc)
-  // 绘制折线
+  // 绘制线段组
   let perW = node.perW
   let _data = data.map((item, index) => node.coord([index, item]))
-  let l_0 = new Lines({
-    pointers: _data as Array<[number, number]>,
-    c: 'rgb(91, 161, 236)',
-    bezier: true,
-    w: .5
-  })
-  l_0.bezier = !l_0.bezier
-  g.add(l_0)
-  console.log(g)
+  for(let i = 0; i < _data.length; i++) {
+    let _l = new Line({
+      p1: [_data[i][0], 0],
+      p2: _data[i] as [number, number]
+    })
+    g.add(_l)
+  }
   Painter.draw(_self, 'G', g)  
 })
